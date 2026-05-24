@@ -424,3 +424,69 @@ Con este sistema tendrá un **respaldo incremental, seguro y automático** que s
 
 Atentamente,  
 Su asistente técnico 🤝
+
+
+```
+No me funciona:
+
+Esto:
+
+cat > ~/Escritorio/DiscoWindows.desktop << 'EOF'
+[Desktop Entry]
+Name=Disco Windows
+Comment=Acceso al disco compartido de Windows 11
+Exec=nautilus /home/pablo/DiscoWindows
+Icon=
+```
+
+El problema principal es que el archivo que estás creando está **incompleto** (falta cerrar la etiqueta `EOF` y faltan algunas líneas clave en la configuración) y, además, los sistemas basados en GNOME modernos (como Ubuntu) requieren un paso adicional de seguridad para que los lanzadores `.desktop` funcionen desde el escritorio.
+
+Aquí tienes la solución paso a paso para dejarlo impecable.
+
+---
+
+### 1. Crea el archivo correctamente
+
+Ejecuta este bloque de código completo en tu terminal. Asegúrate de copiarlo todo, incluyendo la última línea (`EOF`):
+
+```bash
+cat > ~/Escritorio/DiscoWindows.desktop << 'EOF'
+[Desktop Entry]
+Name=Disco Windows
+Comment=Acceso al disco compartido de Windows 11
+Exec=nautilus /home/pablo/DiscoWindows
+Icon=folder-remote
+Terminal=false
+Type=Application
+Categories=System;FileTools;
+EOF
+
+```
+
+> 💡 **Cambios realizados:** > * Añadidos `Type=Application` y `Terminal=false` (son obligatorios para que el sistema sepa cómo ejecutarlo).
+> * Le asigné un icono genérico de carpeta remota (`folder-remote`) para que no se vea vacío.
+> 
+> 
+
+---
+
+### 2. Dale permisos de ejecución
+
+Por defecto, Linux crea los archivos nuevos sin permisos para ejecutarse como programas. Dale permisos con este comando:
+
+```bash
+chmod +x ~/Escritorio/DiscoWindows.desktop
+
+```
+
+---
+
+### 3. El toque final: "Permitir lanzar" (Muy importante)
+
+Aunque tenga permisos, verás que el icono en tu escritorio probablemente muestra un símbolo de peligro o un candado. Esto es por la seguridad de GNOME.
+
+1. Ve a tu **Escritorio**.
+2. Haz **clic derecho** sobre el archivo `DiscoWindows.desktop`.
+3. Selecciona **"Permitir lanzar"** (o *"Allow Launching"* si lo tienes en inglés).
+
+¡Listo! El icono cambiará automáticamente, mostrará el nombre "Disco Windows" y, al hacerle doble clic, te abrirá la carpeta en Nautilus. *(Nota: Asegúrate de que la ruta `/home/pablo/DiscoWindows` realmente exista y esté montada).*
